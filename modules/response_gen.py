@@ -1,11 +1,18 @@
 import os
 import json
+from dotenv import load_dotenv  # ✅ Import for loading .env files
 from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
 from langchain.embeddings import SentenceTransformerEmbeddings
 from langchain_groq import ChatGroq
 from langchain.chains import ConversationalRetrievalChain
+
+# ===============================
+# Load environment variables
+# ===============================
+load_dotenv()
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 VECTORSTORE_DIR = "faiss_index"
 
@@ -59,7 +66,7 @@ def get_vectorstore(folder_path):
 def build_qa_chain(vectorstore):
     llm = ChatGroq(
         temperature=0,
-        groq_api_key="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",  # Replace with your key
+        groq_api_key=GROQ_API_KEY,  # ✅ Loaded from .env
         model_name="llama3-8b-8192"  # Recommended Groq model
     )
     qa_chain = ConversationalRetrievalChain.from_llm(llm, vectorstore.as_retriever())
